@@ -14,10 +14,10 @@ applied  --
  
 
 VIEWS:
-PUBLIC STUDENT -- Select all where privpub bit== 1
-PUBLIC TAKEN  -- Select all where privpub bit == 1
-POSTSofsomefield *** 
-FREE SLOTS  -- all slots which aren't booked yet 
+PUBLIC STUDENT -- Select all where privpub bit== 1 done
+PUBLIC TAKEN  -- Select all where privpub bit == 1 done
+POSTSofsomefield ------- Mod do it using procedure
+FREE SLOTS  -- all slots which aren't booked yet done
 
 
 

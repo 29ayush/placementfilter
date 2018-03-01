@@ -30,6 +30,7 @@ Create TABLE Student (
     Foreign Key (Dept) REFERENCES Departments(Name) ON DELETE CASCADE,
     Foreign Key (Dept) REFERENCES Departments(Name) ON UPDATE CASCADE
 );
+--PrivPub MSB to LSB -- Email,PVCId,PNo,CGPA,Address
 
 Create TABLE Professor (
     Username Varchar(50) Not Null UNIQUE,
@@ -148,7 +149,8 @@ Create Table SlotsAvailable
 	slotId int,
 	`Date` Date NOT NULL,
 	`Time` Time NOT NULL,
-	Primary KEY(slotId),
+    Room int NOT NULL,
+	Primary KEY(slotId,Room),
 	UNIQUE(`Date`,`Time`)
 );
 
@@ -161,8 +163,8 @@ Create Table SlotsAlloted (
 	PRIMARY KEY(PID,slotId),
 	foreign key(PID) references Postings(PID) ON DELETE CASCADE,
 	foreign key(PID) references Postings(PID) ON UPDATE CASCADE,
-	foreign key(slotId) references SlotsAvailable(slotId) ON DELETE CASCADE,
-	foreign key(slotId) references SlotsAvailable(slotId) ON UPDATE CASCADE
+	foreign key(slotId,Room) references SlotsAvailable(slotId,Room) ON DELETE CASCADE,
+	foreign key(slotId,Room) references SlotsAvailable(slotId,Room) ON UPDATE CASCADE
 
 );
 
@@ -187,6 +189,7 @@ Create Table PostProcedure (
 	ExamType varchar(10) NOT NULL,
 	ResultDecl Bit(1) NOT NULL default 0,
 	PRIMARY KEY (PID,RoundNo),
+    UNIQUE(PID,slotid),
 	Foreign key(PID) references Postings(PID) ON DELETE CASCADE,
 	Foreign key(PID,slotid) references SlotsAlloted(PID,slotid) ON DELETE CASCADE
 );

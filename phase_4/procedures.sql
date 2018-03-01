@@ -20,7 +20,7 @@ BEGIN
     else 
         SIGNAL SQLSTATE '50001' SET MESSAGE_TEXT = 'Not enough priviliges';
     end if;
-END;
+END//
 
 
 
@@ -47,7 +47,7 @@ BEGIN
     else 
         SIGNAL SQLSTATE '50001' SET MESSAGE_TEXT = 'Not enough priviliges';
     end if;
-END;
+END//
 
 
 
@@ -75,7 +75,7 @@ BEGIN
     else 
         SIGNAL SQLSTATE '50001' SET MESSAGE_TEXT = 'Not enough priviliges';
     end if;
-END;
+END//
 
 
 
@@ -103,7 +103,7 @@ BEGIN
     else 
         SIGNAL SQLSTATE '50001' SET MESSAGE_TEXT = 'Not enough priviliges';
     end if;
-END;
+END//
 
 
 
@@ -130,7 +130,7 @@ BEGIN
     else 
         SIGNAL SQLSTATE '50001' SET MESSAGE_TEXT = 'Not enough priviliges';
     end if;
-END;
+END//
 
 
 
@@ -160,7 +160,7 @@ BEGIN
     else 
         SIGNAL SQLSTATE '50001' SET MESSAGE_TEXT = 'Not enough priviliges';
     end if;
-END;
+END//
 
 
 
@@ -187,7 +187,7 @@ BEGIN
     else 
         SIGNAL SQLSTATE '50001' SET MESSAGE_TEXT = 'Not enough priviliges';
     end if;
-END;
+END//
 
 
 
@@ -198,7 +198,7 @@ BEGIN
     SELECT SUBSTRING_INDEX(@temp, '@', 1) into @user;
     SET @Q1 = CONCAT("Select * from Student where Username='",@user,"'");
     EXECUTE IMMEDIATE @Q1;
-END;
+END//
 
 
 
@@ -209,7 +209,7 @@ BEGIN
     SELECT SUBSTRING_INDEX(@temp, '@', 1) into @user;
     SET @Q1 = CONCAT("Select * from Taken where Username='",@user,"'");
     EXECUTE IMMEDIATE @Q1;
-END;
+END//
 
 
 
@@ -221,9 +221,21 @@ BEGIN
     else 
         SELECT PID,RollNo,RoundNo,Status from PostsApplicants where PID=pid and RoundNo=roundno and Status="Accepted";
     end if;
-END;
+END//
 
 
+create or replace function getmaxrounds(in_pid int)
+RETURNS INT
+READS SQL DATA
+BEGIN 
+IF EXISTS(SELECT MaxRounds from Postingstry where PID = in_pid)
+   then 
+    RETURN (SELECT MaxRounds from Postingstry where PID = in_pid);
+
+else 
+         RETURN (SELECT 0);
+end if;
+end;
 
 
 
