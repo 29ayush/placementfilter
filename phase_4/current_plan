@@ -1,0 +1,60 @@
+PROCEDURES: 
+Creating User(all 5) Done
+CREATING CR Done
+Adding internships/jobs Done 9 proc
+Modifying all tables 
+creating view with filtering now will do
+Declare result by editing postsapplicants
+HIS SLOTS   slots user has booked
+shortlisted -- Candidates shortlisted for some pid,round Done
+applied  -- 
+
+
+
+ 
+
+VIEWS:
+PUBLIC STUDENT -- Select all where privpub bit== 1
+PUBLIC TAKEN  -- Select all where privpub bit == 1
+POSTSofsomefield *** 
+FREE SLOTS  -- all slots which aren't booked yet 
+
+
+
+TRIGGERS:
+-- Notification Triggers
+1.) Check if slot for user are clashing and inform
+2.) If Student subscribe to company as soon as company post job
+3.) If Student took a post and result is declared
+4.) If student update detail notify his dept proff
+5.) If company place job send to approve to mods 
+
+
+-- Data Insert Sanity Checks
+1.) check round no <= max rounds
+2.) To create event as soon as slot is allocated 
+3.) to create event as soon as job offered and to remind
+4.) to offer job as shortlisted in last round
+5.) check if cr isn't blacklisted
+
+
+
+/*If possible procedure to view postings of part field*/
+/*Trigger to approve notifs*/
+/*check round doesn't exceed max rounds*/
+/* FullJobs -View */
+
+/*
+CREATE VIEW FullJobs AS 
+SELECT  PID,CID,Field,Description,MaxStu,MinStu,Approval,MaxRounds,MaxPay,MinPay,Shift from (Postings JOIN Jobs ON PID = JID);
+*/
+/* FullJobs -Internship */
+
+/*Procedure to add internship,jobs*/
+	
+/* Check if he is allowed based on slot timings */
+/* create view shortlisted */
+
+
+/* Based on the subscriptions fill notifs */
+
