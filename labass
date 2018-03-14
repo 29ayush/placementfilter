@@ -1,0 +1,29 @@
+create view publicstudent as select * from student where name=getuser();
+create view publicstudentid as select * from student where ID=getuserid();
+create or replace function getuser()
+RETURNS VARCHAR(100)
+BEGIN
+SELECT USER() into @temp;
+SELECT SUBSTRING_INDEX(@temp, '@', 1) into @user;
+RETURN (@user);
+END;
+
+create or replace function getuserid()
+RETURNS VARCHAR(5)
+BEGIN
+SELECT USER() into @temp;
+SELECT SUBSTRING_INDEX(@temp, '@', 1) into @user;
+RETURN (select ID from student where name=@user);
+END;
+
+
+create or replace view publictakes as 
+select T1.ID,T6.name,T1.course_id,sec_id,semester,year,grade from 
+((select * from takes where ID=getuserid()) as T1 right join
+(select name,ID from student where ID in (select ID from takes where course_id in (select course_id from takes where ID=(select ID from student where name=getuser())))) as T6 ON T6.ID = T1.ID);
+
+
+create role role_student;
+grant select on placement.publicstudent to role_student;
+grant select on placement.publicstudentid to role_student;
+grant select on placement.publictakes to role_student;
