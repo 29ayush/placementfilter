@@ -30,7 +30,7 @@ Create TABLE Student (
     Foreign Key (Dept) REFERENCES Departments(Name) ON DELETE CASCADE,
     Foreign Key (Dept) REFERENCES Departments(Name) ON UPDATE CASCADE
 );
---PrivPub MSB to LSB -- Email,PVCId,PNo,CGPA,Address
+
 
 Create TABLE Professor (
     Username Varchar(50) Not Null UNIQUE,
@@ -147,25 +147,11 @@ Create Table PostProfileBranch (
 Create Table SlotsAvailable
 (
 	slotId int,
+    Room int NOT NULL,
 	`Date` Date NOT NULL,
 	`Time` Time NOT NULL,
-    Room int NOT NULL,
-	Primary KEY(slotId,Room),
-	UNIQUE(`Date`,`Time`)
-);
-
-
-
-Create Table SlotsAlloted (
-	slotId int ,
-	PID int NOT NULL,
-	Room int NOT NULL,
-	PRIMARY KEY(PID,slotId),
-	foreign key(PID) references Postings(PID) ON DELETE CASCADE,
-	foreign key(PID) references Postings(PID) ON UPDATE CASCADE,
-	foreign key(slotId,Room) references SlotsAvailable(slotId,Room) ON DELETE CASCADE,
-	foreign key(slotId,Room) references SlotsAvailable(slotId,Room) ON UPDATE CASCADE
-
+	Primary KEY(slotId),
+    UNIQUE(Room,`Date`,`Time`)
 );
 
 
@@ -183,15 +169,13 @@ Create Table PostProfileCourse (
 
 Create Table PostProcedure (
 	PID int ,
-	slotid int NOT NULL,
+	slotId int UNIQUE NOT NULL,
 	RoundNo int NOT NULL,
-	StuNo int,
 	ExamType varchar(10) NOT NULL,
 	ResultDecl Bit(1) NOT NULL default 0,
-	PRIMARY KEY (PID,RoundNo),
-    UNIQUE(PID,slotid),
+	PRIMARY KEY (PID,RoundNo), 
 	Foreign key(PID) references Postings(PID) ON DELETE CASCADE,
-	Foreign key(PID,slotid) references SlotsAlloted(PID,slotid) ON DELETE CASCADE
+	Foreign key(slotId) references SlotsAvailable(slotId) ON DELETE CASCADE
 );
 
 
@@ -200,7 +184,7 @@ Create Table PostsApplicants
 	PID int ,
 	RollNo int,
 	RoundNo int,
-	Status enum("PInterview","PDecision","Rejected","Waiting","Passed") DEFAULT NULL,
+	Status enum("PInterview","PDecision","Rejected","Hanged","Passed") DEFAULT NULL,
 	PRIMARY KEY (PID,RollNo,RoundNo),
 	foreign key(PID) references Postings(PID) ON DELETE CASCADE,
 	foreign key(RollNo) references Student(RollNo) ON DELETE CASCADE,
@@ -208,12 +192,13 @@ Create Table PostsApplicants
 );
 
 
+
 Create Table offerdetails 
 (
 	PID int NOT NULL ,
 	RollNo int NOT NULL ,
 	Salary Numeric(12,2) NOT NULL,
-	Status enum("Accept","Decline","Pending") Default "Pending" NOT NULL,
+	Status enum("Accepted","Declined","Pending") Default "Pending" NOT NULL,
 	`Date` Date NOT NULL, 
 	`Time` Time NOT NULL,
 	Primary Key (PID,RollNo),
@@ -247,7 +232,7 @@ Create Table Blacklist (
 
  
 
-
+--PrivPub MSB to LSB -- Email,PVCId,PNo,CGPA,Address
 /*Views - Student jobs, Company students trigger for event*/
 /* View Placed */
 /*VIEW FOR FREE SLOTS*/

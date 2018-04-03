@@ -1,9 +1,10 @@
 PROCEDURES: 
 Creating User(all 5) Done
-CREATING CR Done
-Adding internships/jobs Done 9 proc
-Modifying all tables 
-creating view with filtering now will do
+CREATING CR Done 
+Adding internships/jobs Done
+
+Modifying all tables  -------------------- using triggers guess
+creating view with filtering now will do  
 Declare result by editing postsapplicants
 HIS SLOTS   slots user has booked
 shortlisted -- Candidates shortlisted for some pid,round Done
@@ -38,6 +39,11 @@ TRIGGERS:
 5.) check if cr isn't blacklisted
 
 
+Yet 
+PostsApplicants --trigger update and insert decide later
+offerdetails    -- insert using trigger
+notifs
+    
 
 /*If possible procedure to view postings of part field*/
 /*Trigger to approve notifs*/
