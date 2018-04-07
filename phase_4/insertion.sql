@@ -58,7 +58,6 @@ BEGIN
         INSERT INTO Login VALUES(userna,PASSWORD(pass),"Professor"); 
         INSERT INTO Professor VALUES(userna,Name,StaffId,Dept,Email,PNo);
         SET @query3 = CONCAT("create user '",userna,"'@'localhost' identified by '",pass,"'");
-        SELECT @query3;
         SET @query4 = CONCAT("GRANT ","role_professor"," to ",userna,"@localhost");
         SET @query5 = CONCAT("SET DEFAULT ROLE ","role_professor"," for ",userna,"@localhost");
         EXECUTE IMMEDIATE @query3;
@@ -75,7 +74,7 @@ END//
 
 
 
-CREATE OR REPLACE PROCEDURE createusermod (IN pass varchar(30),IN username Varchar(50)   , IN Name Varchar(50)  , IN Email Varchar(255) , IN PNo Int(10) ) 
+CREATE OR REPLACE PROCEDURE createusermod (IN pass varchar(30),IN userna Varchar(50)   , IN Name Varchar(50)  , IN Email Varchar(255) , IN PNo Int(10) ) 
 BEGIN 
 
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -91,14 +90,14 @@ BEGIN
     SET @commonins = "INSERT INTO Login VALUES(";
     if(@user="root" or @role="role_admin" or @role= "role_moderator")
         then
-        if(username in (select Username from Login))
+        if(userna in (select Username from Login))
         then 
             SIGNAL SQLSTATE '50002' SET MESSAGE_TEXT = 'Username Already Exists';
         end if;
-        INSERT INTO Login VALUES(Username,PASSWORD(pass),"Moderator"); 
-        INSERT INTO Moderator VALUES(username,Name,Email,PNo);
-        SET @query3 = CONCAT("create user '",username,"'@'localhost' identified by '",pass,"'");
-        SET @query4 = CONCAT("GRANT ","role_moderator"," to ",username,"@localhost");
+        INSERT INTO Login VALUES(Userna,PASSWORD(pass),"Moderator"); 
+        INSERT INTO Moderator VALUES(userna,Name,Email,PNo);
+        SET @query3 = CONCAT("create user '",userna,"'@'localhost' identified by '",pass,"'");
+        SET @query4 = CONCAT("GRANT ","role_moderator"," to ",userna,"@localhost");
         SET @query5 = CONCAT("SET DEFAULT ROLE ","role_moderator"," for ",userna,"@localhost");
         EXECUTE IMMEDIATE @query3;
         EXECUTE IMMEDIATE @query4;
@@ -113,7 +112,7 @@ END//
 
 
 
-CREATE OR REPLACE PROCEDURE createuseradmin (IN pass varchar(30),IN username Varchar(50)   , IN Email Varchar(255) , IN PNo Int(10) ) 
+CREATE OR REPLACE PROCEDURE createuseradmin (IN pass varchar(30),IN userna Varchar(50)   , IN Email Varchar(255) , IN PNo Int(10) ) 
 BEGIN 
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -128,14 +127,14 @@ BEGIN
     SET @commonins = "INSERT INTO Login VALUES(";
     if(@user="root" or @role="role_admin" )
         then
-        if(username in (select Username from Login))
+        if(userna in (select Username from Login))
         then 
             SIGNAL SQLSTATE '50002' SET MESSAGE_TEXT = 'Username Already Exists';
         end if;
-        INSERT INTO Login VALUES(Username,PASSWORD(pass),"Admin"); 
-        INSERT INTO Admin VALUES(username,Email,PNo);
+        INSERT INTO Login VALUES(Userna,PASSWORD(pass),"Admin"); 
+        INSERT INTO Admin VALUES(userna,Email,PNo);
         SET @query3 = CONCAT("create user '",username,"'@'localhost' identified by '",pass,"'");
-        SET @query4 = CONCAT("GRANT ","role_admin"," to ",username,"@localhost");
+        SET @query4 = CONCAT("GRANT ","role_admin"," to ",userna,"@localhost");
         SET @query5 = CONCAT("SET DEFAULT ROLE ","role_admin"," for ",userna,"@localhost");
         EXECUTE IMMEDIATE @query3;
         EXECUTE IMMEDIATE @query4;

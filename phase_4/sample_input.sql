@@ -50,8 +50,14 @@ call createuserstudent('1yushbooze','29ayush','Ayush Mittal',111501035,'29ayush@
 call createuserstudent('nightfox','nightfox','Rajat Sharma',111501023,'nightfox@gmail.com',NULL,94891399,'M','Civ. Eng.','BTECH',9.1,NULL,0000);
 
 --Professor
-
+call createuserprof('kamlika','kamlika','Kamalika Choudary',23903,'kaml@gmail.com',989898,'Comp. Sci.');
+ call createuserprof('raju','raju','raju shrivastav',09909,'raju@gmail.com',989932,'Comp. Sci.');
 --CR
+call createusercr('billgate','billgate','Bill gates','bill@microsft.com',9898989,2);
+call createusercr('sunder','sunder','Sunder Pichai','sunder@google.com',4324324,3);
+--Moderator
+call createusermod('ravi','ravi','Ravi Ahlawat','ravi@ravi.com',4323423);
+
 
 
 
