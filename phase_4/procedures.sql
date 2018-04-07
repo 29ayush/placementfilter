@@ -1,7 +1,4 @@
-
-
-
-
+delimiter //
 CREATE OR REPLACE PROCEDURE studentpriv ()
 BEGIN 
     SELECT USER() into @temp;
@@ -17,7 +14,8 @@ CREATE OR REPLACE PROCEDURE takenpriv ()
 BEGIN 
     SELECT USER() into @temp;
     SELECT SUBSTRING_INDEX(@temp, '@', 1) into @user;
-    SET @Q1 = CONCAT("Select * from Taken where Username='",@user,"'");
+    SELECT RollNo from Student where Username=@user into @roll;
+    SET @Q1 = CONCAT("Select * from Taken where RollNo='",@roll,"'");
     EXECUTE IMMEDIATE @Q1;
 END//
 
@@ -96,4 +94,4 @@ represenative for this company";
     
     select * from (select RollNo from PostsApplicants where PID in (select PID from Postings where CID=@CID and Approval=1) and RoundNo=roundd and status="PInterview") as P where P.RollNo in (select DISTINCT RollNo from PostProfileCourse as P,Taken as T where P.CourseCode=T.CourseCode and P.PID=pi and T.sem=ifnull(P.sem,T.sem) and P.MinGrade+0 >= T.Grade+0);
     
-END;
+END;//

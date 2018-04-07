@@ -1,4 +1,5 @@
-CREATE OR REPLACE PROCEDURE createuserstudent (IN pass varchar(30),IN username Varchar(50)   , IN FirstName Varchar(50)  , IN LastName Varchar(50)   , IN RollNo Int , IN Email Varchar(255)   , IN PCVId Varchar(500)   , IN PNo Int, IN Gender enum('M','F') , IN Dept Varchar(50) , IN Programme  enum('BTECH','MTECH','PhD','MSc','BSc','BA','MA') , IN CGPA   Numeric(4,2) , IN address varchar(200)  , IN Privpub BIT(5)  ) 
+delimiter //
+CREATE OR REPLACE PROCEDURE createuserstudent (IN pass varchar(30),IN userna Varchar(50)   , IN Name Varchar(50)  , IN RollNo Int , IN Email Varchar(255)   , IN PCVId Varchar(500)   , IN PNo Int, IN Gender enum('M','F') , IN Dept Varchar(50) , IN Programme  enum('BTECH','MTECH','PhD','MSc','BSc','BA','MA') , IN CGPA   Numeric(4,2) , IN address varchar(200)  , IN Privpub BIT(5)  ) 
 BEGIN 
 
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -11,20 +12,21 @@ BEGIN
     SELECT CURRENT_ROLE() into @role;
     SELECT USER() into @temp;
     SELECT SUBSTRING_INDEX(@temp, '@', 1) into @user;
-    SET @commonins = "INSERT INTO LOGIN VALUES(";
+    SET @commonins = "INSERT INTO Login VALUES(";
     if(@user="root" or @role="role_admin" or @role= "role_moderator")
         then
-        if(username in (select Username from Login))
+        if(userna in (select Username from Login))
         then 
             SIGNAL SQLSTATE '50002' SET MESSAGE_TEXT = 'Username Already Exists';
         end if;
-        INSERT INTO Login VALUES(username,PASSWORD(pass),"Student"); 
-        INSERT INTO Student VALUES(username,FirstName,LastName,RollNo,Email,PCVId,PNo,Gender,Dept,Programme,CGPA,address,Privpub,0);
-        SET @query3 = CONCAT("create user '",username,"'@'localhost' identified by '",pass,"'");
-        SET @query4 = CONCAT("GRANT ","role_student"," to ",username,"@localhost");
-        
+        INSERT INTO Login VALUES(userna,PASSWORD(pass),"Student"); 
+        INSERT INTO Student VALUES(userna,Name,RollNo,Email,PCVId,PNo,Gender,Dept,Programme,CGPA,address,Privpub,0);
+        SET @query3 = CONCAT("create user '",userna,"'@'localhost' identified by '",pass,"'");
+        SET @query4 = CONCAT("GRANT ","role_student"," to ",userna,"@localhost");
+        SET @query5 = CONCAT("SET DEFAULT ROLE  ","role_student"," for ",userna,"@localhost");
         EXECUTE IMMEDIATE @query3;
         EXECUTE IMMEDIATE @query4;
+        EXECUTE IMMEDIATE @query5;
     else 
         SIGNAL SQLSTATE '50001' SET MESSAGE_TEXT = 'Not enough priviliges';
     end if;
@@ -34,7 +36,7 @@ END//
 
 
 
-CREATE OR REPLACE PROCEDURE createuserprof (IN pass varchar(30),IN username Varchar(50)   , IN Name Varchar(50)  , IN StaffId INT , IN Email Varchar(255)   , IN PNo Int(10) , IN Dept Varchar(50) ) 
+CREATE OR REPLACE PROCEDURE createuserprof (IN pass varchar(30),IN userna Varchar(50)   , IN Name Varchar(50)  , IN StaffId INT , IN Email Varchar(255)   , IN PNo Int(10) , IN Dept Varchar(50) ) 
 BEGIN 
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -46,20 +48,22 @@ BEGIN
     SELECT CURRENT_ROLE() into @role;
     SELECT USER() into @temp;
     SELECT SUBSTRING_INDEX(@temp, '@', 1) into @user;
-    SET @commonins = "INSERT INTO LOGIN VALUES(";
+    SET @commonins = "INSERT INTO Login VALUES(";
     if(@user="root" or @role="role_admin" or @role= "role_moderator")
         then
-        if(username in (select Username from Login))
+        if(userna in (select Username from Login))
         then 
             SIGNAL SQLSTATE '50002' SET MESSAGE_TEXT = 'Username Already Exists';
         end if;
-        INSERT INTO LOGIN VALUES(Username,PASSWORD(pass),"Professor"); 
-        INSERT INTO Professor VALUES(username,Name,StaffId,Dept,Email,PNo);
-        SET @query3 = CONCAT("create user '",username,"'@'localhost' identified by '",pass,"'");
-        SET @query4 = CONCAT("GRANT ","role_professor"," to ",username,"@localhost");
-        
+        INSERT INTO Login VALUES(userna,PASSWORD(pass),"Professor"); 
+        INSERT INTO Professor VALUES(userna,Name,StaffId,Dept,Email,PNo);
+        SET @query3 = CONCAT("create user '",userna,"'@'localhost' identified by '",pass,"'");
+        SELECT @query3;
+        SET @query4 = CONCAT("GRANT ","role_professor"," to ",userna,"@localhost");
+        SET @query5 = CONCAT("SET DEFAULT ROLE ","role_professor"," for ",userna,"@localhost");
         EXECUTE IMMEDIATE @query3;
         EXECUTE IMMEDIATE @query4;
+        EXECUTE IMMEDIATE @query5;
     else 
         SIGNAL SQLSTATE '50001' SET MESSAGE_TEXT = 'Not enough priviliges';
     end if;
@@ -84,20 +88,21 @@ BEGIN
     SELECT CURRENT_ROLE() into @role;
     SELECT USER() into @temp;
     SELECT SUBSTRING_INDEX(@temp, '@', 1) into @user;
-    SET @commonins = "INSERT INTO LOGIN VALUES(";
+    SET @commonins = "INSERT INTO Login VALUES(";
     if(@user="root" or @role="role_admin" or @role= "role_moderator")
         then
         if(username in (select Username from Login))
         then 
             SIGNAL SQLSTATE '50002' SET MESSAGE_TEXT = 'Username Already Exists';
         end if;
-        INSERT INTO LOGIN VALUES(Username,PASSWORD(pass),"Moderator"); 
+        INSERT INTO Login VALUES(Username,PASSWORD(pass),"Moderator"); 
         INSERT INTO Moderator VALUES(username,Name,Email,PNo);
         SET @query3 = CONCAT("create user '",username,"'@'localhost' identified by '",pass,"'");
         SET @query4 = CONCAT("GRANT ","role_moderator"," to ",username,"@localhost");
-        
+        SET @query5 = CONCAT("SET DEFAULT ROLE ","role_moderator"," for ",userna,"@localhost");
         EXECUTE IMMEDIATE @query3;
         EXECUTE IMMEDIATE @query4;
+        EXECUTE IMMEDIATE @query5;
     else 
         SIGNAL SQLSTATE '50001' SET MESSAGE_TEXT = 'Not enough priviliges';
     end if;
@@ -120,20 +125,21 @@ BEGIN
     SELECT CURRENT_ROLE() into @role;
     SELECT USER() into @temp;
     SELECT SUBSTRING_INDEX(@temp, '@', 1) into @user;
-    SET @commonins = "INSERT INTO LOGIN VALUES(";
+    SET @commonins = "INSERT INTO Login VALUES(";
     if(@user="root" or @role="role_admin" )
         then
         if(username in (select Username from Login))
         then 
             SIGNAL SQLSTATE '50002' SET MESSAGE_TEXT = 'Username Already Exists';
         end if;
-        INSERT INTO LOGIN VALUES(Username,PASSWORD(pass),"Admin"); 
+        INSERT INTO Login VALUES(Username,PASSWORD(pass),"Admin"); 
         INSERT INTO Admin VALUES(username,Email,PNo);
         SET @query3 = CONCAT("create user '",username,"'@'localhost' identified by '",pass,"'");
         SET @query4 = CONCAT("GRANT ","role_admin"," to ",username,"@localhost");
-        
+        SET @query5 = CONCAT("SET DEFAULT ROLE ","role_admin"," for ",userna,"@localhost");
         EXECUTE IMMEDIATE @query3;
         EXECUTE IMMEDIATE @query4;
+        EXECUTE IMMEDIATE @query5;
     else 
         SIGNAL SQLSTATE '50001' SET MESSAGE_TEXT = 'Not enough priviliges';
     end if;
@@ -143,7 +149,7 @@ END//
 
 
 
-CREATE OR REPLACE PROCEDURE createusercr (IN pass varchar(30),IN username Varchar(50)   , IN Name Varchar(50)  ,  IN Email Varchar(255)   , IN PNo Int(10) , IN CID int) 
+CREATE OR REPLACE PROCEDURE createusercr (IN pass varchar(30),IN userna Varchar(50)   , IN Name Varchar(50)  ,  IN Email Varchar(255)   , IN PNo Int(10) , IN CID int) 
 BEGIN 
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -155,20 +161,21 @@ BEGIN
     SELECT CURRENT_ROLE() into @role;
     SELECT USER() into @temp;
     SELECT SUBSTRING_INDEX(@temp, '@', 1) into @user;
-    SET @commonins = "INSERT INTO LOGIN VALUES(";
+    SET @commonins = "INSERT INTO Login VALUES(";
     if(@user="root" or @role="role_admin" or @role= "role_moderator")
         then
-        if(username in (select Username from Login))
+        if(userna in (select Username from Login))
         then 
             SIGNAL SQLSTATE '50002' SET MESSAGE_TEXT = 'Username Already Exists';
         end if;
-        INSERT INTO LOGIN VALUES(Username,PASSWORD(pass),"CR"); 
-        INSERT INTO CR VALUES(username,Name,Email,PNo,CID);
-        SET @query3 = CONCAT("create user '",username,"'@'localhost' identified by '",pass,"'");
-        SET @query4 = CONCAT("GRANT ","role_cr"," to ",username,"@localhost");
-        
+        INSERT INTO Login VALUES(userna,PASSWORD(pass),"CR"); 
+        INSERT INTO CR VALUES(userna,Name,Email,PNo,CID);
+        SET @query3 = CONCAT("create user '",userna,"'@'localhost' identified by '",pass,"'");
+        SET @query4 = CONCAT("GRANT ","role_cr"," to ",userna,"@localhost");
+        SET @query5 = CONCAT("SET DEFAULT ROLE ","role_cr"," for ",userna,"@localhost");
         EXECUTE IMMEDIATE @query3;
         EXECUTE IMMEDIATE @query4;
+        EXECUTE IMMEDIATE @query5;
     else 
         SIGNAL SQLSTATE '50001' SET MESSAGE_TEXT = 'Not enough priviliges';
     end if;

@@ -13,8 +13,7 @@ create TABLE Departments (
 
 Create TABLE Student (
     Username Varchar(50)  Not NULL UNIQUE,
-    FirstName Varchar(50) Not NULL,
-    LastName Varchar(50)  Not NULL,
+    Name Varchar(50) Not NULL,
     RollNo Int Primary Key, 
     Email Varchar(255)    Not NULL UNIQUE,
     PCVId Varchar(500)    UNIQUE,
@@ -56,6 +55,7 @@ Create TABLE Moderator (
 
 Create TABLE Admin (
     Username Varchar(50) PRIMARY KEY,
+    Name Varchar(50) Not NULL,
     Email Varchar(255) Not NULL UNIQUE,
     PNo    Int Not NULL UNIQUE,
     Foreign Key (Username) REFERENCES Login(Username) ON DELETE CASCADE
