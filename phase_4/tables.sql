@@ -26,7 +26,7 @@ Create TABLE Student (
     Privpub BIT(5) default 00000 NOT NULL,
     Verified BIT(1) default 0 NOT NULL,
     Foreign Key (Username) REFERENCES Login(Username) ON DELETE CASCADE,
-    Foreign Key (Dept) REFERENCES Departments(Name) ON DELETE CASCADE,
+    Foreign Key (Dept) REFERENCES Departments(Name) ON DELETE NO ACTION,
     Foreign Key (Dept) REFERENCES Departments(Name) ON UPDATE CASCADE
 );
 
@@ -39,7 +39,7 @@ Create TABLE Professor (
     Email Varchar(255) Not NULL UNIQUE,
     PNo    Int   Not NULL UNIQUE,
     Foreign Key (Username) REFERENCES Login(Username) ON DELETE CASCADE,
-    Foreign Key (Dept) REFERENCES Departments(Name) ON DELETE CASCADE,
+    Foreign Key (Dept) REFERENCES Departments(Name) ON DELETE NO ACTION,
     Foreign Key (Dept) REFERENCES Departments(Name) ON UPDATE CASCADE
 );
 
@@ -139,14 +139,14 @@ Create Table PostProfileBranch (
 	Department Varchar(50) NOT NULL, 
 	MinGPA Numeric(4,2),
 	FOREIGN KEY(PID) references Postings(PID)  ON DELETE CASCADE,	
-	Foreign Key (Department) REFERENCES Departments(Name) ON DELETE CASCADE,
+	Foreign Key (Department) REFERENCES Departments(Name) ON DELETE NO ACTION,
 	Foreign Key (Department) REFERENCES Departments(Name) ON UPDATE CASCADE
 );
 
 
 Create Table SlotsAvailable
 (
-	slotId int,
+	slotId int auto_increment,
     Room int NOT NULL,
 	`Date` Date NOT NULL,
 	`Time` Time NOT NULL,
@@ -218,7 +218,6 @@ Create Table Notifications (
 Id int AUTO_INCREMENT PRIMARY KEY,
 Username Varchar(50) NOT NULL ,
 notify TEXT NOT NULL,
-Category Varchar(50) NOT NULL,
 FOREIGN KEY(Username) references Login(Username)  ON DELETE CASCADE
 );
 
