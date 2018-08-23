@@ -9,7 +9,7 @@ BEGIN
     END;
 
     start transaction;
-    SELECT CURRENT_ROLE() into @role;
+    select default_role from mysql.user where user=(SELECT SUBSTRING_INDEX( (SELECT USER()), '@', 1) ) into @role;
     SELECT USER() into @temp;
     SELECT SUBSTRING_INDEX(@temp, '@', 1) into @user;
     SET @commonins = "INSERT INTO Login VALUES(";
@@ -45,7 +45,7 @@ BEGIN
     END;
     
     start transaction;
-    SELECT CURRENT_ROLE() into @role;
+    select default_role from mysql.user where user=(SELECT SUBSTRING_INDEX( (SELECT USER()), '@', 1) ) into @role;
     SELECT USER() into @temp;
     SELECT SUBSTRING_INDEX(@temp, '@', 1) into @user;
     SET @commonins = "INSERT INTO Login VALUES(";
@@ -84,7 +84,7 @@ BEGIN
     END;
 
     start transaction;
-    SELECT CURRENT_ROLE() into @role;
+    select default_role from mysql.user where user=(SELECT SUBSTRING_INDEX( (SELECT USER()), '@', 1) ) into @role;
     SELECT USER() into @temp;
     SELECT SUBSTRING_INDEX(@temp, '@', 1) into @user;
     SET @commonins = "INSERT INTO Login VALUES(";
@@ -121,7 +121,7 @@ BEGIN
     END;
 
     start transaction;
-    SELECT CURRENT_ROLE() into @role;
+    select default_role from mysql.user where user=(SELECT SUBSTRING_INDEX( (SELECT USER()), '@', 1) ) into @role;
     SELECT USER() into @temp;
     SELECT SUBSTRING_INDEX(@temp, '@', 1) into @user;
     SET @commonins = "INSERT INTO Login VALUES(";
@@ -157,7 +157,7 @@ BEGIN
     END;
 
     start transaction;
-    SELECT CURRENT_ROLE() into @role;
+    select default_role from mysql.user where user=(SELECT SUBSTRING_INDEX( (SELECT USER()), '@', 1) ) into @role;
     SELECT USER() into @temp;
     SELECT SUBSTRING_INDEX(@temp, '@', 1) into @user;
     SET @commonins = "INSERT INTO Login VALUES(";
@@ -195,7 +195,7 @@ BEGIN
     END;
 
     start transaction;
-    SELECT CURRENT_ROLE() into @role;
+    select default_role from mysql.user where user=(SELECT SUBSTRING_INDEX( (SELECT USER()), '@', 1) ) into @role;
     SELECT USER() into @temp;
     SELECT SUBSTRING_INDEX(@temp, '@', 1) into @user;
 
@@ -227,7 +227,7 @@ BEGIN
     END;
 
     start transaction;
-    SELECT CURRENT_ROLE() into @role;
+    select default_role from mysql.user where user=(SELECT SUBSTRING_INDEX( (SELECT USER()), '@', 1) ) into @role;
     SELECT USER() into @temp;
     SELECT SUBSTRING_INDEX(@temp, '@', 1) into @user;
     

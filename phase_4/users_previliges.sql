@@ -9,6 +9,7 @@ grant SELECT  ON placement_cell.publictaken TO role_student;
 grant SELECT  ON placement_cell.publicstudent TO role_student;
 grant SELECT  ON placement_cell.freeslots TO role_student;
 grant SELECT  ON placement_cell.Courses TO role_student;
+grant SELECT  ON placement_cell.Company TO role_student;
 grant SELECT  ON placement_cell.Departments TO role_student;
 grant SELECT  ON placement_cell.Jobs TO role_student;
 grant SELECT  ON placement_cell.Internships TO role_student;
@@ -16,6 +17,7 @@ grant SELECT  ON placement_cell.Postings TO role_student;
 grant SELECT  ON placement_cell.PostProcedure TO role_student;
 grant SELECT  ON placement_cell.PostProfileBranch TO role_student;
 grant INSERT  ON placement_cell.Taken TO role_student;
+grant SELECT  ON placement_cell.pernotifs TO role_professor;
 grant EXECUTE ON *.* TO role_student;
 
 create role role_professor;

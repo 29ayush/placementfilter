@@ -44,6 +44,17 @@ insert into SlotsAvailable (Room,`Date`,`Time`) VALUES
 (2,"2018-06-07","10:00"),
 (2,"2018-06-13","10:00");
 
+--Job Fields
+insert into JobFields VALUES
+("Web Design","Design websites"),
+("Cooking","DO cooking not judge"),
+("Home Decor","wannabe architect"),
+("Programming","coders gonna code"),
+("Android","chahca");
+
+--Broadcast Channel
+insert into Login values ('#role_student','pass123','Broadcast');
+insert into Login values ('#role_moderator','pass123','Broadcast');
 --Users 
 --Student
 call createuserstudent('1yushbooze','29ayush','Ayush Mittal',111501035,'29ayush@gmail.com',NULL,945761595,'M','Comp. Sci.','BTECH',9.1,NULL,0000);
@@ -58,6 +69,8 @@ call createusercr('sunder','sunder','Sunder Pichai','sunder@google.com',4324324,
 --Moderator
 call createusermod('ravi','ravi','Ravi Ahlawat','ravi@ravi.com',4323423);
 
+---------------------------------------------------------------
+call addjobs("Programming","come work",8,1,10,10000,18,'Morning');
 
 
 

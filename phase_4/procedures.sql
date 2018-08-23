@@ -36,9 +36,9 @@ create or replace function getmaxrounds(in_pid int)
 RETURNS INT
 READS SQL DATA
 BEGIN 
-IF EXISTS(SELECT MaxRounds from Postingstry where PID = in_pid)
+IF EXISTS(SELECT MaxRounds from Postings where PID = in_pid)
    then 
-    RETURN (SELECT MaxRounds from Postingstry where PID = in_pid);
+    RETURN (SELECT MaxRounds from Postings where PID = in_pid);
 
 else 
          RETURN (SELECT 0);
@@ -54,9 +54,9 @@ BEGIN
 
     select `Date`,`Time` from SlotsAvailable where slotId = slots into @date,@time;
 
-    select count(*) from (select DISTINCT RollNo from PostsApplicants where (PID,RoundNo) in (select PID,RoundNo+1 from PostProcedure where slotId in (select slotId from SlotsAvailable where `Date`=@date and `Time`=@time and slotId!=slots)) ) as O where RollNo
+    select count(*) from (select DISTINCT RollNo from PostsApplicants where (PID,RoundNo) in (select PID,RoundNo from PostProcedure where slotId in (select slotId from SlotsAvailable where `Date`=@date and `Time`=@time and slotId!=slots)) and Status="PInterview" ) as O where RollNo
     in      
-    (select DISTINCT RollNo from PostsApplicants where PID=pi and RoundNo=roundn)  into @b;
+    ( select DISTINCT RollNo from PostsApplicants where PID=pi and RoundNo=roundn-1 and status="Passed")  into @b;
      
     return @b;
 end;//
@@ -70,8 +70,12 @@ BEGIN
         SELECT USER() into @temp;
         SELECT SUBSTRING_INDEX(@temp, '@', 1) into @user;    
         select RollNo from Student where username=@user into @roll;
-        if( ifnull(@roll,'#') not in (select RollNo from Student as S where S.Dept in (select Department from PostProfileBranch) and S.CGPA >= (select MinGPA from PostProfileBranch where Department=S.Dept))) then
+        select count(*) from PostProfileBranch WHERE PID=in_pid into @count;
+        if(@count!=0) then begin
+        if( ifnull(@roll,'#') not in (select RollNo from Student as S where S.Dept in (select ifnull(Department,S.Dept) from PostProfileBranch) and S.CGPA >= (select ifnull(MinGPA,0) from PostProfileBranch where PID=in_pid))) then
           SIGNAL SQLSTATE '50000' SET MESSAGE_TEXT = "Not Eligible";
+        end if;
+        end;
         end if;
         INSERT INTO PostsApplicants VALUES (in_pid,@roll,0,"PInterview");        
     else

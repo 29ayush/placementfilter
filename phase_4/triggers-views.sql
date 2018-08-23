@@ -14,7 +14,7 @@ CREATE OR REPLACE TRIGGER pppr BEFORE INSERT ON PostProcedure
     select CID from CR where username=@user into @CID;
     SELECT CID from Postings where PID=NEW.PID into @iCID;
     
-    if(ifnull(@iCID,'#')!=ifnull(@iCID,'#1')) then   
+    if(ifnull(@CID,'#')!=ifnull(@iCID,'#1')) then   
         SIGNAL SQLSTATE '50000' SET MESSAGE_TEXT = "You are not a represenative for this company";
     end if;
 
@@ -39,7 +39,7 @@ CREATE OR REPLACE TRIGGER ppup BEFORE UPDATE ON PostProcedure
     select CID from CR where username=@user into @CID;
     SELECT CID from Postings where PID=NEW.PID into @iCID;
     
-    if(ifnull(@iCID,'#')!=ifnull(@iCID,'#1')) then   
+    if(ifnull(@CID,'#')!=ifnull(@iCID,'#1')) then   
         SIGNAL SQLSTATE '50000' SET MESSAGE_TEXT = "You are not a represenative for this company";
     end if;
 
@@ -95,7 +95,7 @@ CREATE OR REPLACE TRIGGER ppbr BEFORE INSERT ON PostProfileBranch
     select CID from CR where username=@user into @CID;
     SELECT CID from Postings where PID=NEW.PID into @iCID;
     
-    if(ifnull(@iCID,'#')!=ifnull(@iCID,'#1')) then   
+    if(ifnull(@CID,'#')!=ifnull(@iCID,'#1')) then   
         SIGNAL SQLSTATE '50000' SET MESSAGE_TEXT = "You are not a represenative for this company";
     end if;
 
@@ -117,7 +117,7 @@ CREATE OR REPLACE TRIGGER ppbup BEFORE UPDATE ON PostProfileBranch
     select CID from CR where username=@user into @CID;
     SELECT CID from Postings where PID=NEW.PID into @iCID;
     
-    if(ifnull(@iCID,'#')!=ifnull(@iCID,'#1')) then   
+    if(ifnull(@CID,'#')!=ifnull(@iCID,'#1')) then   
         SIGNAL SQLSTATE '50000' SET MESSAGE_TEXT = "You are not a represenative for this company";
     end if;
 
@@ -155,7 +155,7 @@ CREATE OR REPLACE TRIGGER ppcr BEFORE INSERT ON PostProfileCourse
     select CID from CR where username=@user into @CID;
     SELECT CID from Postings where PID=NEW.PID into @iCID;
     
-    if(ifnull(@iCID,'#')!=ifnull(@iCID,'#1')) then   
+    if(ifnull(@CID,'#')!=ifnull(@iCID,'#1')) then   
         SIGNAL SQLSTATE '50000' SET MESSAGE_TEXT = "You are not a represenative for this company";
     end if;
 
@@ -176,7 +176,7 @@ CREATE OR REPLACE TRIGGER ppcup BEFORE UPDATE ON PostProfileCourse
     select CID from CR where username=@user into @CID;
     SELECT CID from Postings where PID=NEW.PID into @iCID;
     
-    if(ifnull(@iCID,'#')!=ifnull(@iCID,'#1')) then   
+    if(ifnull(@CID,'#')!=ifnull(@iCID,'#1')) then   
         SIGNAL SQLSTATE '50000' SET MESSAGE_TEXT = "You are not a represenative for this company";
     end if;
 
@@ -208,9 +208,9 @@ CREATE OR REPLACE TRIGGER postingsupdate BEFORE UPDATE ON Postings
   FOR EACH ROW
   BEGIN
     
-    select default_role from mysql.user where user=(SELECT SUBSTRING_INDEX( (SELECT USER()), '@', 1) ) into @role;
+    select default_role from mysql.user where user=(SELECT SUBSTRING_INDEX( (SELECT USER()), '@', 1) ) limit 1 into @role;
     
-    if(ifnull(@a,0)!='role_moderator' && ifnull(@a,0)!='role_admin' && ifnull(@a,0)!='role_cr' ) then   
+    if(ifnull(@a,0)!='role_moderator' && ifnull(@a,0)!=0 && ifnull(@a,0)!='role_cr' ) then   
         SIGNAL SQLSTATE '50000' SET MESSAGE_TEXT = "Not Enough Privleges or use proper channel";
     end if; 
     
@@ -222,7 +222,7 @@ CREATE OR REPLACE TRIGGER postingsupdate BEFORE UPDATE ON Postings
     Select CID from CR where Username=@user into @Q1;
     
     SET NEW.Approval = 0;
-    if(ifnull(@Q1,'a')!=NEW.CID) then
+    if(ifnull(@Q1,1)!=NEW.CID) then
     SIGNAL SQLSTATE '50000' SET MESSAGE_TEXT = "Not Matching Username";
     end if;
     end;
@@ -240,7 +240,11 @@ CREATE OR REPLACE TRIGGER postaftesupdate AFTER UPDATE ON Postings
     
     IF(NEW.Approval=0) then
     SET @note = CONCAT("Post Details Updated PID: ",NEW.PID);
-    Insert Into Notifications VALUES ("#role_moderator",@note);
+    Insert Into Notifications(Username,notify) VALUES ("#role_moderator",@note);
+    end if;
+    IF(NEW.Approval=1 and OLD.Approval=0) then
+    SET @note = CONCAT("Post Added by : ",NEW.CID,"Post Id ",NEW.PID);
+    INSERT INTO Notifications(Username,notify) select Username,@note from Subscriptions  where CID=NEW.CID;
     end if;
   END;//
 
@@ -371,7 +375,7 @@ CREATE OR REPLACE TRIGGER offerinsertvalid BEFORE INSERT ON offerdetails
     select CID from CR where username=@user into @CID;
     SELECT CID from Postings where PID=NEW.PID into @iCID;
     
-    if(ifnull(@iCID,'#')!=ifnull(@iCID,'#1')) then   
+    if(ifnull(@CID,'#')!=ifnull(@iCID,'#1')) then   
         SIGNAL SQLSTATE '50000' SET MESSAGE_TEXT = "You are not a represenative for this company";
     end if;
 
@@ -412,7 +416,7 @@ CREATE OR REPLACE TRIGGER  offerupdate BEFORE UPDATE ON offerdetails
         select CID from CR where username=@user into @CID;
         SELECT CID from Postings where PID=NEW.PID into @iCID;
     
-        if(ifnull(@iCID,'#')!=ifnull(@iCID,'#1')) then   
+        if(ifnull(@CID,'#')!=ifnull(@iCID,'#1')) then   
             SIGNAL SQLSTATE '50000' SET MESSAGE_TEXT = "You are not a represenative for this company";
         end if; 
     end if;
@@ -454,19 +458,22 @@ CREATE OR REPLACE TRIGGER ppaup BEFORE INSERT ON PostsApplicants
 
     select default_role from mysql.user where user=(SELECT SUBSTRING_INDEX( (SELECT USER()), '@', 1) ) into @a;
 
-    if(ifnull(@a,0)!='role_cr') then   
+    if(ifnull(@a,0)!='role_cr' && ifnull(@a,0)!='role_student') then   
         SIGNAL SQLSTATE '50000' SET MESSAGE_TEXT = "Not Enough Privleges or use proper channel";
     end if; 
-    
+    if(ifnull(@a,0)='role_cr')
+    then 
+    begin 
     SELECT USER() into @temp;
     SELECT SUBSTRING_INDEX(@temp, '@', 1) into @user;    
     select CID from CR where username=@user into @CID;
     SELECT CID from Postings where PID=NEW.PID into @iCID;
     
-    if(ifnull(@iCID,'#')!=ifnull(@iCID,'#1')) then   
+    if(ifnull(@CID,'#')!=ifnull(@iCID,'#1')) then   
         SIGNAL SQLSTATE '50000' SET MESSAGE_TEXT = "You are not a represenative for this company";
     end if;
-
+end;
+end if;
   END;//
 
 
@@ -565,6 +572,38 @@ CREATE OR REPLACE TRIGGER jobsupdate BEFORE UPDATE ON Jobs
     UPDATE Postings SET Approval=0 where PID=NEW.JID;
     end;
     end if;
+  END;//
+
+
+delimiter //
+CREATE OR REPLACE TRIGGER studentupdate BEFORE UPDATE ON Student
+  FOR EACH ROW
+  BEGIN
+
+    select default_role from mysql.user where user=(SELECT SUBSTRING_INDEX( (SELECT USER()), '@', 1) ) into @a;
+
+    if(ifnull(@a,0)!='role_student' && ifnull(@a,0)!='role_professor' ) then   
+        SIGNAL SQLSTATE '50000' SET MESSAGE_TEXT = "Not Enough Privleges or use proper channel";
+    end if; 
+    
+    if(ifnull(@a,0)='role_student' ) then
+    SELECT USER() into @temp;
+    SELECT SUBSTRING_INDEX(@temp, '@', 1) into @user;    
+    select RollNo from Student where username=@user into @roll;
+    
+    if(ifnull(@roll,'#')!=New.RollNo) then   
+        SIGNAL SQLSTATE '50000' SET MESSAGE_TEXT = "Use your own roll No ";
+    end if;
+
+    SET NEW.Verified = 0;
+
+    SET @note = CONCAT(@user,'Updated his profile please review');
+	INSERT INTO Notifications (Username,notify) values ("#role_professor",@note);
+    
+    
+    end if;
+
+    
   END;//
 
 

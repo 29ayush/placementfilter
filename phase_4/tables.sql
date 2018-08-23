@@ -4,7 +4,7 @@ use placement_cell;
 Create TABLE Login (
     Username Varchar(50) Primary Key,
     PasswordHash BINARY(64) NOT NULL,
-    Usertype enum("Student","Professor","Moderator","Admin","CR")
+    Usertype enum("Student","Professor","Moderator","Admin","CR","Broadcast")
 );
 
 create TABLE Departments (
